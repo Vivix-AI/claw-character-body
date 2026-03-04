@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  bridge:
+    build: ./src/bridge
+    ports: ["3001:3001"]
+    env_file: .env
+    volumes: ["./data:/app/data"]
+    restart: unless-stopped
+  web:
+    build: ./src/web
+    ports: ["3002:3002"]
+    environment:
+      - NEXT_PUBLIC_API_URL=http://bridge:3001
+      - NEXT_PUBLIC_WS_URL=ws://bridge:3001
+    depends_on: [bridge]
+    restart: unless-stopped
